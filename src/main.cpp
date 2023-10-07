@@ -1,11 +1,10 @@
 #include <iostream>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-
+int main() {  
   if (!glfwInit()) {
-    // Handle initialization error
+    std::cout << "GLFW initialization failed!" << std::endl;
     return -1;
   }
 
@@ -13,12 +12,20 @@ int main() {
   GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Window", nullptr, nullptr);
 
   if (!window) {
-    // Handle window creation error
+    std::cout << "GLFW window creation failed!" << std::endl;
     glfwTerminate();
     return -1;
   }
 
   glfwMakeContextCurrent(window);
+
+  if (glewInit() != GLEW_OK) {
+    std::cout << "GLEW initialization failed!" << std::endl;
+    return -1;
+  }
+
+  // Actual OpenGL code starts here
+  std::cout << glGetString(GL_VERSION) << std::endl;
 
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);

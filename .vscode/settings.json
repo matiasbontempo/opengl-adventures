@@ -1,7 +1,8 @@
 {
   "C_Cpp.default.includePath": [
       "${workspaceFolder}/**",
-      "${workspaceFolder}/dependencies/glfw-3.3.8.WIN64/include"
+      "${workspaceFolder}/dependencies/glfw-3.3.8.WIN64/include",
+      "${workspaceFolder}/dependencies/glew-2.1.0/include"
   ],
   "files.associations": {
     "array": "cpp",
