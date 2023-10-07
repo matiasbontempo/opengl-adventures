@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+          "-g",
+          "src/main.cpp",
+          "-o",
+          "build/main.exe",
+          "-I",
+          "dependencies/glfw-3.3.8.WIN64/include",
+          "-L",
+          "dependencies/glfw-3.3.8.WIN64/lib-mingw-w64",
+          "-lglfw3",
+          "-lopengl32",
+          "-lUser32",
+          "-lGdi32",
+          "-lShell32"
+      ],
+      "group": {
+          "kind": "build",
+          "isDefault": false
+      }
+    },
+    {
+      "label": "run",
+      "type": "shell",
+      "command": "./build/main.exe",
+      "group": {
+          "kind": "build",
+          "isDefault": true
+      },
+      "dependsOn": "build",
+      "presentation": {
+        "echo": true
+      }
+    }
+  ]
+}
