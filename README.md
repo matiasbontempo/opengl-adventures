@@ -54,3 +54,6 @@ Then I followed the same steps as I did for GLFW to setup the library path. The 
 This was very straightforward. I just followed the instructions in the video and it worked. The only thing I had to do was change the `#version 330 core` to `#version 410` in the vertex and fragment shaders. In the video this worked but I was getting an error. Changing the version or adding `#extension GL_ARB_explicit_uniform_location : enable` to the top of the shaders fixed the issue. The version seemed to be the better solution for me.
 
 After this step I had a shader parser that was able to load and compile shaders. And most important: I had a red triangle on the screen! 🔺🔺🔺
+
+## The Mighty Square and Index Buffers
+Drawing a square was easy: Just draw two triangles! But there's a better way to do this: Index Buffers. I followed the instructions to define a list of vertices and a list of indices. After some minor changes to the code, I had a square on the screen! 🟦
