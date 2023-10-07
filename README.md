@@ -41,3 +41,16 @@ Finally, I had to setup the library path. This took A LOT of time (3 hours?). Th
 - I was able to open the build output window by pressing Ctrl+Shift+B adding a new task that runs by default.
 
 After all that, I was able to compile and run the program with `CTRL+SHIFT+B` and VOILA! A window appeared with a black background. ⬛🪟🥳
+
+## GLEW
+I'm using [GLEW](http://glew.sourceforge.net/) to load OpenGL functions. I downloaded the [pre-compiled binaries](http://glew.sourceforge.net/) for Windows and extracted the `include` and `lib-x64` folders to a folder called `dependencies/glew-2.1.0` in the root of the project.
+
+Then I followed the same steps as I did for GLFW to setup the library path. The two main issues I had were:
+
+- I had to set the `GLEW_STATIC` preprocessor definition. I had some issues with this because I was setting it in the `c_cpp_properties.json` file but it wasn't working. I had to set it in the `tasks.json` file.
+- When adding the glew32s library, I had to add if before the opengl32 library. I'm not sure why but this is what worked for me.
+
+## Modern OpenGL and Shaders
+This was very straightforward. I just followed the instructions in the video and it worked. The only thing I had to do was change the `#version 330 core` to `#version 410` in the vertex and fragment shaders. In the video this worked but I was getting an error. Changing the version or adding `#extension GL_ARB_explicit_uniform_location : enable` to the top of the shaders fixed the issue. The version seemed to be the better solution for me.
+
+After this step I had a shader parser that was able to load and compile shaders. And most important: I had a red triangle on the screen! 🔺🔺🔺
