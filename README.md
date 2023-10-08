@@ -57,3 +57,6 @@ After this step I had a shader parser that was able to load and compile shaders.
 
 ## The Mighty Square and Index Buffers
 Drawing a square was easy: Just draw two triangles! But there's a better way to do this: Index Buffers. I followed the instructions to define a list of vertices and a list of indices. After some minor changes to the code, I had a square on the screen! 🟦
+
+## Vertex Buffers
+After setting the profile to 'core', OpenGL no longer creates a default vertex array object under the hood. This took a bit to understand so I left a lot of comments in the code. The idea is that the vertex array object is a container for vertex buffers and vertex attributes. Now I don't have to bind the vertex array object every time I want to draw something. I just bind it once and then bind the vertex buffer and vertex attributes. This is supposed to be a lot cleaner and easier to understand later on when I have more complex objects and scenes.

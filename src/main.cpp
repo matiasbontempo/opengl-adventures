@@ -101,6 +101,10 @@ int main() {
     return -1;
   }
 
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // Set OpenGL version to 3.x
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // Set OpenGL version to x.3
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Use core profile
+
   // Create a GLFW window
   GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Window", nullptr, nullptr);
 
@@ -118,7 +122,7 @@ int main() {
     return -1;
   }
 
-  // Actual OpenGL code starts here
+  // Log OpenGL version
   std::cout << glGetString(GL_VERSION) << std::endl;
 
   float positions[] = {
@@ -133,18 +137,34 @@ int main() {
     2, 3, 0
   };
 
+  // Now that we are using the core profile we need to create a vertex array object
+  // This was previously created in the background by GLFW
+  unsigned int vao; // Vertex array object
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  // Create a buffer to store the vertex data (positions)
+  // This is the buffer that will hold the vertex data
   unsigned int buffer;
   glGenBuffers(1, &buffer);
   glBindBuffer(GL_ARRAY_BUFFER, buffer);
   glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
+  // Create a buffer to store the index data, this way we don't have to send the same vertex data multiple times
+  // This is the buffer that will hold the index data pointing to the vertex data
   unsigned int ibo; // Index buffer object
   glGenBuffers(1, &ibo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+  // Tell OpenGL how to interpret the vertex data
+  int attributeIndex = 0; // We only have one attribute, the position
+  // Enable the vertex attribute array
+  glEnableVertexAttribArray(attributeIndex);
+  // Next we need to tell OpenGL how to interpret the vertex data
+  // This is because our vertex data is just a bunch of floats, OpenGL doesn't know how to interpret it
+  // We could have a bunch of floats that represent colors, or texture coordinates, or normals, etc. In this case we only have positions
+  glVertexAttribPointer(attributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // This is the line that links the buffer to the vertex array object
 
   ShaderProgramSource source = ParseShader("res/shaders/basic.shader");
   // std::cout << "VERTEX" << std::endl;
@@ -159,6 +179,12 @@ int main() {
   ASSERT(location != -1);
   glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f);
 
+  // Unbind everything
+  glBindVertexArray(0);
+  glUseProgram(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
   float r = 0.0f;
   float increment = 0.05f;
 
@@ -166,7 +192,14 @@ int main() {
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // Before we draw anything we need to bind the shader and the vertex array object
+    glUseProgram(shader);
     GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
+    
+    // As we are usinig an index buffer we no longer need to bind the vertex buffer because the vertex array object already has a reference to it
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    
     GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
     if (r > 1.0f) {
