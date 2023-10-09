@@ -8,6 +8,7 @@
 
 #include "Renderer.h"
 
+#include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
@@ -126,29 +127,15 @@ int main() {
       2, 3, 0
     };
 
-    // Now that we are using the core profile we need to create a vertex array object
-    // This was previously created in the background by GLFW
-    std::cout << "Creating vertex array object..." << std::endl;
-    unsigned int vao; // Vertex array object
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-
-    std::cout << "Creating vertex buffer..." << std::endl;
+    VertexArray va;
     VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    
+    VertexBufferLayout layout;
+    layout.Push(GL_FLOAT, 2);
 
-    std::cout << "Creating index buffer..." << std::endl;
+    va.AddBuffer(vb, layout);
+
     IndexBuffer ib(indices, 6);
-
-    // Tell OpenGL how to interpret the vertex data
-    int attributeIndex = 0; // We only have one attribute, the position
-    // Enable the vertex attribute array
-    glEnableVertexAttribArray(attributeIndex);
-    // Next we need to tell OpenGL how to interpret the vertex data
-    // This is because our vertex data is just a bunch of floats, OpenGL doesn't know how to interpret it
-    // We could have a bunch of floats that represent colors, or texture coordinates, or normals, etc. In this case we only have positions
-    std::cout << "Creating vertex buffer layout..." << std::endl;
-    glVertexAttribPointer(attributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // This is the line that links the buffer to the vertex array object
 
     ShaderProgramSource source = ParseShader("res/shaders/basic.shader");
     // std::cout << "VERTEX" << std::endl;
@@ -182,8 +169,7 @@ int main() {
       GLCall(glUseProgram(shader));
       GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
       
-      // As we are usinig an index buffer we no longer need to bind the vertex buffer because the vertex array object already has a reference to it
-      GLCall(glBindVertexArray(vao));
+      va.Bind();
       ib.Bind();
 
       GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));

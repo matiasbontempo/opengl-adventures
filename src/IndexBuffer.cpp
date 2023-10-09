@@ -1,8 +1,10 @@
-#include "IndexBuffer.h"
+#include <iostream>
 
 #include "Renderer.h"
+#include "IndexBuffer.h"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count): m_Count(count) {
+  std::cout << "Creating index buffer..." << std::endl;
   ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
   GLCall(glGenBuffers(1, &m_RendererID));
