@@ -60,3 +60,6 @@ Drawing a square was easy: Just draw two triangles! But there's a better way to 
 
 ## Vertex Buffers
 After setting the profile to 'core', OpenGL no longer creates a default vertex array object under the hood. This took a bit to understand so I left a lot of comments in the code. The idea is that the vertex array object is a container for vertex buffers and vertex attributes. Now I don't have to bind the vertex array object every time I want to draw something. I just bind it once and then bind the vertex buffer and vertex attributes. This is supposed to be a lot cleaner and easier to understand later on when I have more complex objects and scenes.
+
+## Abstractions
+The code is starting to get a bit messy. The tutorial suggests abstracting the Vertex Array, Vertex Buffer, Index Buffer and Shader into classes. No major issues with this except that I had to change one cast in the VertexArray class from `(const void*)offset` to `(const void*)(uintptr_t)offset`. The compiler was showing a warning and chatgpt suggested this solution. I'm not sure why it worked but it did. Something about the size of an int and a pointer being different.
