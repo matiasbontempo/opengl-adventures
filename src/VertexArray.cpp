@@ -1,7 +1,8 @@
+#include "VertexArray.h"
 #include <iostream>
 
 #include "Renderer.h"
-#include "VertexArray.h"
+#include "VertexBufferLayout.h"
 
 VertexArray::VertexArray() {
   std::cout << "Creating vertex array object..." << std::endl;
