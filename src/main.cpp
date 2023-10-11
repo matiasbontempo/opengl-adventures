@@ -76,6 +76,8 @@ int main() {
     vb.Unbind();
     ib.Unbind();
     shader.Unbind();
+    
+    Renderer renderer;
 
     float r = 0.0f;
     float increment = 0.05f;
@@ -84,15 +86,12 @@ int main() {
 
     // Main loop until the window is closed
     while (!glfwWindowShouldClose(window)) {
-      glClear(GL_COLOR_BUFFER_BIT);
+      renderer.Clear();
 
       shader.Bind();
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-      
-      va.Bind();
-      ib.Bind();
 
-      GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+      renderer.Draw(va, ib, shader);
 
       if (r > 1.0f) {
         increment = -0.05f;
