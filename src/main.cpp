@@ -10,9 +10,11 @@
 
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 
 #include "Shader.h"
+#include "Texture.h"
 
 int main() {  
   if (!glfwInit()) {
@@ -46,10 +48,10 @@ int main() {
 
   {
     float positions[] = {
-      -0.5f, -0.5f, // 0
-      0.5f, -0.5f, // 1
-      0.5f,  0.5f, // 2
-      -0.5f,  0.5f, // 3
+      -0.5f, -0.5f, 0.0f, 0.0f, // 0
+      0.5f, -0.5f, 1.0f, 0.0f, // 1
+      0.5f,  0.5f, 1.0f, 1.0f, // 2
+      -0.5f,  0.5f, 0.0f, 1.0f // 3
     };
 
     unsigned int indices[] = {
@@ -57,11 +59,15 @@ int main() {
       2, 3, 0
     };
 
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
     VertexArray va;
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
     
     VertexBufferLayout layout;
-    layout.Push(GL_FLOAT, 2);
+    layout.Push(GL_FLOAT, 2); // position
+    layout.Push(GL_FLOAT, 2); // texture coordinates
 
     va.AddBuffer(vb, layout);
 
@@ -70,6 +76,10 @@ int main() {
     Shader shader("res/shaders/basic.shader");
     shader.Bind();
     shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+
+    Texture texture("res/textures/test.png");
+    texture.Bind();
+    shader.SetUniform1i("u_Texture", 0);
 
     // Unbind everything
     va.Unbind();

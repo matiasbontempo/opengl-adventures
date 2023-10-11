@@ -14,6 +14,8 @@
           "src/IndexBuffer.cpp",
           "src/VertexArray.cpp",
           "src/Shader.cpp",
+          "src/Texture.cpp",
+          "src/vendor/stb_image/stb_image.cpp",
           "-o",
           "build/main.exe",
           "-I",
