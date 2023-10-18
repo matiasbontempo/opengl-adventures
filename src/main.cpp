@@ -6,6 +6,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "vendor/glm/glm.hpp"
+#include "vendor/glm/gtc/matrix_transform.hpp"
+
 #include "Renderer.h"
 
 #include "VertexArray.h"
@@ -15,6 +18,9 @@
 
 #include "Shader.h"
 #include "Texture.h"
+
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 int main() {  
   if (!glfwInit()) {
@@ -27,7 +33,7 @@ int main() {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Use core profile
 
   // Create a GLFW window
-  GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Window", nullptr, nullptr);
+  GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL Window", nullptr, nullptr);
 
   if (!window) {
     std::cout << "GLFW window creation failed!" << std::endl;
@@ -48,10 +54,10 @@ int main() {
 
   {
     float positions[] = {
-      -0.5f, -0.5f, 0.0f, 0.0f, // 0
-      0.5f, -0.5f, 1.0f, 0.0f, // 1
-      0.5f,  0.5f, 1.0f, 1.0f, // 2
-      -0.5f,  0.5f, 0.0f, 1.0f // 3
+      100.0f, 100.0f, 0.0f, 0.0f, // 0
+      200.0f, 100.0f, 1.0f, 0.0f, // 1
+      200.0f, 200.0f, 1.0f, 1.0f, // 2
+      100.0f, 200.0f, 0.0f, 1.0f // 3
     };
 
     unsigned int indices[] = {
@@ -73,9 +79,12 @@ int main() {
 
     IndexBuffer ib(indices, 6);
 
+    glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f);
+
     Shader shader("res/shaders/basic.shader");
     shader.Bind();
     shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+    shader.SetUniformMat4f("u_MVP", proj);
 
     Texture texture("res/textures/test.png");
     texture.Bind();
