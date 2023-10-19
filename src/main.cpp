@@ -84,14 +84,10 @@ int main() {
 
     glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
-
-    glm::mat4 mvp = proj * view * model;
 
     Shader shader("res/shaders/basic.shader");
     shader.Bind();
     shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-    shader.SetUniformMat4f("u_MVP", mvp);
 
     Texture texture("res/textures/test.png");
     texture.Bind();
@@ -109,9 +105,13 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
     ImGui::StyleColorsDark();
+    
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     float r = 0.0f;
     float increment = 0.05f;
+
+    glm::vec3 translation(200, 200, 0);
 
     std::cout << "Entering main loop..." << std::endl;
 
@@ -123,8 +123,12 @@ int main() {
       ImGui_ImplGlfw_NewFrame();
       ImGui::NewFrame();
 
+      glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+      glm::mat4 mvp = proj * view * model;
+
       shader.Bind();
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+      shader.SetUniformMat4f("u_MVP", mvp);
 
       renderer.Draw(va, ib, shader);
 
@@ -135,6 +139,16 @@ int main() {
       }
 
       r += increment;
+
+      {
+        ImGui::Begin("Testing");
+
+        ImGui::Text("This is some useful text.");
+        ImGui::SliderFloat2("Translation", &translation.x, 0.0f, 960.0f);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        ImGui::End();
+      }
 
       ImGui::Render();
       ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
