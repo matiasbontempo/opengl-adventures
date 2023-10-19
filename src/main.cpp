@@ -8,6 +8,9 @@
 
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
+#include "vendor/imgui/imgui.h"
+#include "vendor/imgui/imgui_impl_glfw.h"
+#include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include "Renderer.h"
 
@@ -102,6 +105,11 @@ int main() {
     
     Renderer renderer;
 
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui::StyleColorsDark();
+
     float r = 0.0f;
     float increment = 0.05f;
 
@@ -110,6 +118,10 @@ int main() {
     // Main loop until the window is closed
     while (!glfwWindowShouldClose(window)) {
       renderer.Clear();
+
+      ImGui_ImplOpenGL3_NewFrame();
+      ImGui_ImplGlfw_NewFrame();
+      ImGui::NewFrame();
 
       shader.Bind();
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
@@ -124,10 +136,17 @@ int main() {
 
       r += increment;
 
+      ImGui::Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+      
       glfwSwapBuffers(window);
       glfwPollEvents();
     }
   }
+
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
 
   std::cout << "Terminating GLFW..." << std::endl;
   glfwTerminate();
